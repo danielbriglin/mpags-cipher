@@ -4,3 +4,5 @@ A simple command line tool for encrypting/decrypting text using classical cipher
 ## Documentation 
 
 #other changes
+
+adding stuff is fun!!!
