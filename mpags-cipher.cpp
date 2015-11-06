@@ -1,31 +1,59 @@
 #include <iostream>
+#include <string>
+#include <fstream>
 
+// My project headers
+#include "TransformChar.hpp"
+#include "ProcessCommandLine.hpp"
+#include "CaesarCipher.hpp"
 
-
-int main()
+int main(int argc, char *argv[])
 {
-  //this is a comment!!! 
-  /* This is a multiline comment*/
-  std::cout<< "Hello World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n";
-
-  int a{4}, b{8}, c{0};
-  a=++a;
-  c = a*b;
-
-  std:: cout << c << "\n"; 
-
-  const double s{5.5012};
-
-  std:: cout <<s <<"\n"; 
-
-  std:: cout<< s*a << "\n";
+  CommandLineInfo info;
+  processCommandLine(argc,argv,info);
   
-  auto p{true};
+  std::string in{""};
+  char in_char{'x'};
 
-  //std:: cout<<p<< "\n";
+  if(info.input_file_name == "")
+    {
+      while(std::cin >> in_char) // Builds output from input
+	{
+	  in += transformChar(in_char);
+	}
+    }
+  else
+    {
+      // Read input from file
+      std::ifstream in_file {info.input_file_name};
+      bool ok_to_read = in_file.good();
+      if(ok_to_read == true)
+	{
+	  while(in_file >> in_char) // Builds output from input
+	    {
+	      in += transformChar(in_char);
+	    }
+	}
+      else std::cout<<"ERROR READING INPUT FILE!!!"<<std::endl;
+      in_file.close();
+    }
 
-  std:: cout<< s/a <<"\n";
+  CaesarCipherClass cipher{info.key};
+  
+  cipher.caesarCipher(info.decrypt, in);
 
-  std:: cout<< a/b<<"\n";
+  if(info.output_file_name == "")
+    {
+      std::cout<<in<<std::endl; // Outputs desired output
+    }
+  else
+    {
+      std::ofstream out_file {info.output_file_name};
+      bool ok_to_write = out_file.good();
+      if(ok_to_write == true) out_file << in;
+      else std::cout<<"ERROR WRITING TO OUTPUT FILE!!!"<<std::endl;
+      out_file.close();
+    }
 
+  return 0;
 }
